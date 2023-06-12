@@ -28,7 +28,9 @@ spring:
 #  redis:
 #    host: 127.0.0.1
 #    port: 6379
-#logging:
-#  level:
-#    org.springframework: DEBUG
-#    com.example.shop1back: DEBUG
+
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.example.shop1back: DEBUG

@@ -15,7 +15,7 @@ public class UserController {
     final private UserService userService;
 
     @PostMapping("/sign-up")//회원가입
-    public Boolean signUp(@RequestBody UserRegisterForm form) {
+    public String signUp(@RequestBody UserRegisterForm form) {
         log.info("signUp(): " + form);
         return userService.signUp(form);
 

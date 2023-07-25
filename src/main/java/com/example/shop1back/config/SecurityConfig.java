@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))//파라미터 : AuthenticationManager
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(),userRepository))
                 .authorizeRequests()
-                .antMatchers("/userOnly/**").authenticated()//어떠한 ROLE이든 로그인되어있으면 접근가능
+                .antMatchers("/userOnly/**").authenticated()//어떠한 ROLE이든 로그인되어있으면 접근가능(사용자가 로그인 상태인 경우)
                 .antMatchers("/managerOnly/**").access("hasRole('ROLE_MANAGER')")
                 .anyRequest().permitAll();
 

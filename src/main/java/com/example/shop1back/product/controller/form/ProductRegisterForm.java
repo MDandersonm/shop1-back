@@ -1,4 +1,4 @@
-package com.example.shop1back.user.controller.form;
+package com.example.shop1back.product.controller.form;
 
 import lombok.Getter;
 import lombok.Setter;

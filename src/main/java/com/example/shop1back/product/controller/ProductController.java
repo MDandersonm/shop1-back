@@ -2,6 +2,7 @@ package com.example.shop1back.product.controller;
 
 import com.example.shop1back.product.controller.form.ProductRegisterForm;
 import com.example.shop1back.product.service.ProductService;
+import com.example.shop1back.product.service.response.ProductDetailResponse;
 import com.example.shop1back.product.service.response.ProductListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,11 @@ public class ProductController {
     public List<ProductListResponse> productList() {
         log.info("product list! ");
         return productService.productList();
+    }
+    @GetMapping("/detail/{productId}")
+    public ProductDetailResponse productRead(@PathVariable("productId") Long productId) {
+        log.info("product Read()");
+        return productService.read(productId);
     }
 
 

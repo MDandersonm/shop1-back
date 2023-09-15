@@ -3,6 +3,7 @@ package com.example.shop1back.product.service;
 import com.example.shop1back.product.controller.form.ProductRegisterForm;
 import com.example.shop1back.product.entity.Product;
 import com.example.shop1back.product.repository.ProductRepository;
+import com.example.shop1back.product.service.response.ProductDetailResponse;
 import com.example.shop1back.product.service.response.ProductListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -70,6 +71,8 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+
+
     private ProductListResponse convertToProductListResponse(Product product) {
         ProductListResponse response = new ProductListResponse();
         response.setId(product.getId());
@@ -79,4 +82,24 @@ public class ProductServiceImpl implements ProductService {
         response.setImage(product.getImage());
         return response;
     }
+
+
+    @Override
+    public ProductDetailResponse read(Long productId) {
+        Optional<Product> productOpt = productRepository.findById(productId);
+        if (productOpt.isEmpty()) {
+            throw new RuntimeException("Product not found for ID: " + productId);
+        }
+        Product product = productOpt.get();
+
+        ProductDetailResponse response = new ProductDetailResponse();
+        response.setId(product.getId());
+        response.setName(product.getName());
+        response.setBrand(product.getBrand());
+        response.setPrice(product.getPrice());
+        response.setImage(product.getImage());
+
+        return response;
+    }
+
 }

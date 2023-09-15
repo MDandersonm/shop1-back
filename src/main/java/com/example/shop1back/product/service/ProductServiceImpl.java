@@ -2,6 +2,7 @@ package com.example.shop1back.product.service;
 
 import com.example.shop1back.product.controller.form.ProductRegisterForm;
 import com.example.shop1back.product.entity.Product;
+import com.example.shop1back.product.entity.ProductDetailImage;
 import com.example.shop1back.product.repository.ProductRepository;
 import com.example.shop1back.product.service.response.ProductDetailResponse;
 import com.example.shop1back.product.service.response.ProductListResponse;
@@ -28,13 +29,13 @@ public class ProductServiceImpl implements ProductService {
     private final String UPLOAD_DIR = "../shop1-front/public/images/product/"; // 이미지 저장 경로
 
     @Override
-    public String saveProduct(MultipartFile image, ProductRegisterForm productRegisterForm) {
+    public String saveProduct(MultipartFile image, List<MultipartFile> detailImages, ProductRegisterForm productRegisterForm) {
         Product product = new Product();
         product.setName(productRegisterForm.getName());
         product.setBrand(productRegisterForm.getBrand());
         product.setPrice(productRegisterForm.getPrice());
         try {
-            // 이미지 처리
+            // 썸네일이미지 처리
             if (image != null && !image.isEmpty()) {
                 String originalFilename = image.getOriginalFilename();
                 String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
@@ -51,6 +52,29 @@ public class ProductServiceImpl implements ProductService {
         } catch (IOException e) {
             e.printStackTrace();
             return "이미지 저장 실패";
+        }
+        try {
+            // 상세 이미지 처리
+            for (MultipartFile detailImage : detailImages) {
+                if (detailImage != null && !detailImage.isEmpty()) {
+                    String originalFilename = detailImage.getOriginalFilename();
+                    String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+                    String newFileName = UUID.randomUUID().toString() + System.currentTimeMillis() + fileExtension;
+
+                    byte[] bytes = detailImage.getBytes();
+                    Path path = Paths.get(UPLOAD_DIR + newFileName);
+                    Files.write(path, bytes);
+
+                    ProductDetailImage detailImageEntity = new ProductDetailImage();
+                    detailImageEntity.setDetailImageUrl(newFileName);
+                    detailImageEntity.setProduct(product); // 상품과 연결
+                    product.getDetailImages().add(detailImageEntity); // 상품 상세 이미지 리스트에 추가
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "상세 이미지 저장 실패";
         }
 
         productRepository.save(product);
@@ -86,20 +110,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDetailResponse read(Long productId) {
-        Optional<Product> productOpt = productRepository.findById(productId);
+        Optional<Product> productOpt = productRepository.findByIdWithDetailImages(productId);
         if (productOpt.isEmpty()) {
             throw new RuntimeException("Product not found for ID: " + productId);
         }
         Product product = productOpt.get();
-
-        ProductDetailResponse response = new ProductDetailResponse();
-        response.setId(product.getId());
-        response.setName(product.getName());
-        response.setBrand(product.getBrand());
-        response.setPrice(product.getPrice());
-        response.setImage(product.getImage());
-
-        return response;
+        return new ProductDetailResponse(
+                product.getId(),
+                product.getName(),
+                product.getBrand(),
+                product.getPrice(),
+                product.getImage(),
+                product.getDetailImages() 
+        );
     }
 
 }

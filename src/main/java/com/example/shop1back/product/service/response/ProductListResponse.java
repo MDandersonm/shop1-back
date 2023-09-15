@@ -1,12 +1,11 @@
 package com.example.shop1back.product.service.response;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductListResponse {
     private Long id;
     private String name;

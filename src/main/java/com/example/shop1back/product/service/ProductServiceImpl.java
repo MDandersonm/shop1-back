@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -53,28 +54,30 @@ public class ProductServiceImpl implements ProductService {
             e.printStackTrace();
             return "이미지 저장 실패";
         }
-        try {
-            // 상세 이미지 처리
-            for (MultipartFile detailImage : detailImages) {
-                if (detailImage != null && !detailImage.isEmpty()) {
-                    String originalFilename = detailImage.getOriginalFilename();
-                    String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        if (detailImages != null) {
+            try {
+                // 상세 이미지 처리
+                for (MultipartFile detailImage : detailImages) {
+                    if (detailImage != null && !detailImage.isEmpty()) {
+                        String originalFilename = detailImage.getOriginalFilename();
+                        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
 
-                    String newFileName = UUID.randomUUID().toString() + System.currentTimeMillis() + fileExtension;
+                        String newFileName = UUID.randomUUID().toString() + System.currentTimeMillis() + fileExtension;
 
-                    byte[] bytes = detailImage.getBytes();
-                    Path path = Paths.get(UPLOAD_DIR + newFileName);
-                    Files.write(path, bytes);
+                        byte[] bytes = detailImage.getBytes();
+                        Path path = Paths.get(UPLOAD_DIR + newFileName);
+                        Files.write(path, bytes);
 
-                    ProductDetailImage detailImageEntity = new ProductDetailImage();
-                    detailImageEntity.setDetailImageUrl(newFileName);
-                    detailImageEntity.setProduct(product); // 상품과 연결
-                    product.getDetailImages().add(detailImageEntity); // 상품 상세 이미지 리스트에 추가
+                        ProductDetailImage detailImageEntity = new ProductDetailImage();
+                        detailImageEntity.setDetailImageUrl(newFileName);
+                        detailImageEntity.setProduct(product); // 상품과 연결
+                        product.getDetailImages().add(detailImageEntity); // 상품 상세 이미지 리스트에 추가
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "상세 이미지 저장 실패";
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "상세 이미지 저장 실패";
         }
 
         productRepository.save(product);
@@ -115,13 +118,14 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Product not found for ID: " + productId);
         }
         Product product = productOpt.get();
+        List<ProductDetailImage> detailImages = product.getDetailImages() != null ? product.getDetailImages() : new ArrayList<>();
         return new ProductDetailResponse(
                 product.getId(),
                 product.getName(),
                 product.getBrand(),
                 product.getPrice(),
                 product.getImage(),
-                product.getDetailImages() 
+                detailImages
         );
     }
 

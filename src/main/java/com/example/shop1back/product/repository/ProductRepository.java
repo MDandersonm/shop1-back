@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT DISTINCT p FROM Product p JOIN FETCH p.detailImages WHERE p.id = :id")
+    @Query("SELECT DISTINCT p FROM Product p LEFT JOIN FETCH p.detailImages WHERE p.id = :id")
     Optional<Product> findByIdWithDetailImages(Long id);
 
 

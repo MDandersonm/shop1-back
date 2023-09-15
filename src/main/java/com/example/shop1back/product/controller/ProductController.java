@@ -24,7 +24,7 @@ public class ProductController {
     @PostMapping(value = "/register",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String saveProduct(@RequestPart(value="image") MultipartFile image,
-                              @RequestPart(value = "detailImages") List<MultipartFile> detailImages,
+                              @RequestPart(value = "detailImages", required = false) List<MultipartFile> detailImages,
                               @RequestPart(value="product") ProductRegisterForm productRegisterForm) {
         log.info("product register! ");
         return productService.saveProduct( image,detailImages , productRegisterForm);

@@ -12,4 +12,6 @@ public interface ProductService {
     String saveProduct(MultipartFile image,List<MultipartFile> detailImages, ProductRegisterForm productRegisterForm);
     List<ProductListResponse> productList();
     ProductDetailResponse read(Long productId);
+    String updateProduct(Long productId , MultipartFile image,List<MultipartFile> detailImages, ProductRegisterForm productRegisterForm);
+
 }

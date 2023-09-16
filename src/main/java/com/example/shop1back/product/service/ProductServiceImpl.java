@@ -98,9 +98,7 @@ public class ProductServiceImpl implements ProductService {
         }
         log.info("product list services! ");
         // Product 엔터티 리스트를 ProductListResponse DTO 리스트로 변환
-        return products.stream()
-                .map(this::convertToProductListResponse)
-                .collect(Collectors.toList());
+        return products.stream().map(this::convertToProductListResponse).collect(Collectors.toList());
     }
 
 
@@ -123,14 +121,7 @@ public class ProductServiceImpl implements ProductService {
         }
         Product product = productOpt.get();
         List<ProductDetailImage> detailImages = product.getDetailImages() != null ? product.getDetailImages() : new ArrayList<>();
-        return new ProductDetailResponse(
-                product.getId(),
-                product.getName(),
-                product.getBrand(),
-                product.getPrice(),
-                product.getImage(),
-                detailImages
-        );
+        return new ProductDetailResponse(product.getId(), product.getName(), product.getBrand(), product.getPrice(), product.getImage(), detailImages);
     }
 
     @Override
@@ -191,10 +182,10 @@ public class ProductServiceImpl implements ProductService {
                     //상세이미지 엔티티 명시적 삭제
                     productDetailImageRepository.delete(detailImageEntity);
                 }
-                System.out.println("product.getDetailImages().toString()"+product.getDetailImages().toString());
+                System.out.println("product.getDetailImages().toString()" + product.getDetailImages().toString());
                 //clear해서 product를 덮어씌운다해도  productDetailImage db에 있던 데이터가 삭제되진 않는다
                 product.getDetailImages().clear();
-                System.out.println("후product.getDetailImages().toString()"+product.getDetailImages().toString());
+                System.out.println("후product.getDetailImages().toString()" + product.getDetailImages().toString());
             }
 
 
@@ -213,7 +204,7 @@ public class ProductServiceImpl implements ProductService {
                         detailImageEntity.setDetailImageUrl(newFileName);
                         detailImageEntity.setProduct(product);
                         product.getDetailImages().add(detailImageEntity);
-                        System.out.println("입력product.getDetailImages().toString()"+product.getDetailImages().toString());
+                        System.out.println("입력product.getDetailImages().toString()" + product.getDetailImages().toString());
 
                     }
                 }
@@ -222,9 +213,15 @@ public class ProductServiceImpl implements ProductService {
                 return "상세 이미지 저장 실패";
             }
         }
-        System.out.println("최종 세이브 전product.getDetailImages().toString()"+product.getDetailImages().toString());
+        System.out.println("최종 세이브 전product.getDetailImages().toString()" + product.getDetailImages().toString());
         productRepository.save(product);
         return "상품 수정 성공";
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
     }
 
 

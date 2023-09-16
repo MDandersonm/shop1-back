@@ -7,6 +7,7 @@ import com.example.shop1back.product.service.response.ProductListResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,6 +51,12 @@ public class ProductController {
                                 @PathVariable("productId") Long productId) {
         log.info("product update! ");
         return productService.updateProduct(productId, image, detailImages, productRegisterForm);
+    }
+    @DeleteMapping("/delete/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+        log.info("product 삭제 컨트롤러");
+        productService.deleteProduct(productId);
+        return ResponseEntity.ok().build();
     }
 
 

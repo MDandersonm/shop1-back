@@ -14,4 +14,5 @@ public interface ProductService {
     ProductDetailResponse read(Long productId);
     String updateProduct(Long productId , MultipartFile image,List<MultipartFile> detailImages, ProductRegisterForm productRegisterForm);
 
+    void deleteProduct(Long productId);
 }

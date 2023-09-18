@@ -29,40 +29,63 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    private final CorsFilter corsFilter;
     private final UserRepository userRepository;
+    private final CorsConfig corsConfig;
     private final PrincipalOauth2UserService principalOauth2UserService;
     @Bean
     public BCryptPasswordEncoder encodePwd() {
         return new BCryptPasswordEncoder();
     }
     @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.cors().configurationSource(corsConfigurationSource());
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .addFilter(corsConfig.corsFilter())//
+                .csrf().disable()//
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//
                 .and()
-//                .addFilter(corsFilter)
-                .formLogin().disable()
-                .httpBasic().disable()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))//파라미터 : AuthenticationManager
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(),userRepository))
+                .formLogin().disable()//
+                .httpBasic().disable()//
+
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))//
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))//
                 .authorizeRequests()
-                .antMatchers("/userOnly/**").authenticated()//어떠한 ROLE이든 로그인되어있으면 접근가능(사용자가 로그인 상태인 경우)
-                .antMatchers("/managerOnly/**").access("hasRole('ROLE_MANAGER')")
+                .antMatchers("/onlyuser/**")
+                .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/products/onlyadmin/**")
+                .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll();
-
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+
+
+//    @Override
+//    public void configure(HttpSecurity http) throws Exception {
+//        http.csrf().disable();
+//        http.cors().configurationSource(corsConfigurationSource());
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+////                .addFilter(corsFilter)
+//                .formLogin().disable()
+//                .httpBasic().disable()
+//                .addFilter(new JwtAuthenticationFilter(authenticationManager()))//파라미터 : AuthenticationManager
+//                .addFilter(new JwtAuthorizationFilter(authenticationManager(),userRepository))
+//                .authorizeRequests()
+//                .antMatchers("/userOnly/**").authenticated()//어떠한 ROLE이든 로그인되어있으면 접근가능(사용자가 로그인 상태인 경우)
+//                .antMatchers("/managerOnly/**").access("hasRole('ROLE_MANAGER')")
+//                .anyRequest().permitAll();
+//
+//    }
+
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+//        configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
+//        configuration.setAllowedHeaders(Arrays.asList("*"));
+//        configuration.setAllowCredentials(true);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
 
 }

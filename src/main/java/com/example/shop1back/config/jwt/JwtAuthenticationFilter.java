@@ -157,14 +157,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		System.out.println("header:"+response.getHeader(JwtProperties.HEADER_STRING));
 
 
-
-		Map<String, String> tokenMap = new HashMap<>();
-		tokenMap.put("token", JwtProperties.TOKEN_PREFIX+jwtToken);
-		String jsonToken = new ObjectMapper().writeValueAsString(tokenMap);
-
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(jsonToken);
+// 헤더에서토큰이 담겨져서 브라우저로 보내니까 아래 코드는 필요없다.
+//		Map<String, String> tokenMap = new HashMap<>();
+//		tokenMap.put("token", JwtProperties.TOKEN_PREFIX+jwtToken);
+//		String jsonToken = new ObjectMapper().writeValueAsString(tokenMap);
+//
+//		response.setContentType("application/json");
+//		response.setCharacterEncoding("UTF-8");
+//		response.getWriter().write(jsonToken);
 		//이제 토큰을 통해서 처리하는 필터가 하나 필요하다 토큰을 통해서 중요한정보에 접근할수있게 서버는 jwt토큰이 유효한지를 판단하는 필터를 만들어야함
 		//JwtAuthorizationFilter를만든다.
 	}

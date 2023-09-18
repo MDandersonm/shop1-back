@@ -52,6 +52,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 		System.out.println("doFilterInternal- 인증이나 권한이 필요한 주소요청이 됨");
 		
 		String header = request.getHeader(JwtProperties.HEADER_STRING);
+		System.out.println("request.getHeader(JwtProperties.HEADER_STRING)"+header);
 		
 
 		
@@ -72,8 +73,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 		String email = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
 				.getClaim("email").asString();
 		
-//		username이 있다면  	서명이 정상적으로 되었다는것
+//		email이 있다면  	서명이 정상적으로 되었다는것
 		if(email != null) {
+			System.out.println("email이 존재합니다.");
 			User user = userRepository.findByEmail(email);
 			
 			// 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해 

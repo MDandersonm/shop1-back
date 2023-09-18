@@ -2,9 +2,11 @@ package com.example.shop1back.user.controller;
 
 import com.example.shop1back.config.auth.PrincipalDetails;
 import com.example.shop1back.user.controller.form.UserRegisterForm;
+import com.example.shop1back.user.entity.User;
 import com.example.shop1back.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,18 @@ public class UserController {
         log.info("signUp(): " + form);
         return userService.signUp(form);
     }
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/onlyuser/userinfo")
+    public User user(Authentication authentication) {
+        System.out.println("userinfo에 접근");
+        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("principal : "+principal.getUser().getId());
+        System.out.println("principal : "+principal.getUser().getUsername());
+        System.out.println("principal : "+principal.getUser().getPassword());
+        System.out.println("principal : "+principal.getUser().getRole());
+        return principal.getUser();
+    }
+
     @GetMapping("/test/login")
     public @ResponseBody String testLogin(Authentication authentication,
                                           @AuthenticationPrincipal PrincipalDetails userDetails) {	//의존성주입

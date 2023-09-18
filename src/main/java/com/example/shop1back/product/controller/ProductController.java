@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +22,8 @@ public class ProductController {
 
     private final ProductService productService;
 
-
-    @PostMapping(value = "/register",
+    @Secured("ROLE_ADMIN")
+    @PostMapping(value = "/onlyadmin/register",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String saveProduct(@RequestPart(value = "image") MultipartFile image,
                               @RequestPart(value = "detailImages", required = false) List<MultipartFile> detailImages,
@@ -42,8 +43,8 @@ public class ProductController {
         log.info("product Read()");
         return productService.read(productId);
     }
-
-    @PutMapping(value = "/update/{productId}",
+    @Secured("ROLE_ADMIN")
+    @PutMapping(value = "/onlyadmin/update/{productId}",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public String updateProduct(@RequestPart(value = "image", required = false) MultipartFile image,
                                 @RequestPart(value = "detailImages", required = false) List<MultipartFile> detailImages,
@@ -52,7 +53,8 @@ public class ProductController {
         log.info("product update! ");
         return productService.updateProduct(productId, image, detailImages, productRegisterForm);
     }
-    @DeleteMapping("/delete/{productId}")
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/onlyadmin/delete/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         log.info("product 삭제 컨트롤러");
         productService.deleteProduct(productId);

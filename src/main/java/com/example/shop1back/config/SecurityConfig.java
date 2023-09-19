@@ -27,14 +27,16 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true) // 특정 주소 접근시 권한 및 인증을 위한 어노테이션 활성화
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//    private final CorsFilter corsFilter;
+    //    private final CorsFilter corsFilter;
     private final UserRepository userRepository;
     private final CorsConfig corsConfig;
     private final PrincipalOauth2UserService principalOauth2UserService;
+
     @Bean
     public BCryptPasswordEncoder encodePwd() {
         return new BCryptPasswordEncoder();
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -45,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()//
                 .httpBasic().disable()//
 
+
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))//
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))//
                 .authorizeRequests()
@@ -53,8 +56,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/products/onlyadmin/**")
                 .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll();
+//                .and()
+//                 OAuth2 Login 설정
+//                .oauth2Login()
+//                .loginPage("/login")
+//                .userInfoEndpoint()
+//                .userService(principalOauth2UserService);
     }
-
 
 
 //    @Override

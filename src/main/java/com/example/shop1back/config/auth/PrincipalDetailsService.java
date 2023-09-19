@@ -22,6 +22,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 	//String username 자리는  input에서 name속성으로 지정한 명칭을 그대로 작성해줘야한다.
 	//함수종료시 @AuthenticationPrincipal 어노테이션이 만들어진다.
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		System.out.println("loadUserByUsername메서드 진입");
 		System.out.println("email:"+email);
 		User user = userRepository.findByEmail(email);
 		System.out.println("user@:"+user);

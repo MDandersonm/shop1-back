@@ -24,7 +24,7 @@ public class UserController {
         log.info("signUp(): " + form);
         return userService.signUp(form);
     }
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/onlyuser/userinfo")
     public User user(Authentication authentication) {
         System.out.println("userinfo에 접근");

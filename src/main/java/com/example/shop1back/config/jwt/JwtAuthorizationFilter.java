@@ -93,6 +93,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 //			authentication객체가 실제 로그인으로 만들어진게 아니라 서명을 통한 검증으로 username이 있으면 authentication을 만들어줌
 			
 			// 강제로 시큐리티의 세션에 접근하여 authentication객체 저장
+			System.out.println("authentication객체 저장 !");
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
 	

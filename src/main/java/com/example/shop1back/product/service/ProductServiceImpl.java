@@ -7,6 +7,8 @@ import com.example.shop1back.product.repository.ProductDetailImageRepository;
 import com.example.shop1back.product.repository.ProductRepository;
 import com.example.shop1back.product.service.response.ProductDetailResponse;
 import com.example.shop1back.product.service.response.ProductListResponse;
+import com.example.shop1back.wishList.entity.Wishlist;
+import com.example.shop1back.wishList.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -32,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductDetailImageRepository productDetailImageRepository;
+    private final WishlistRepository wishlistRepository;
     private final String UPLOAD_DIR = "../shop1-front/public/images/product/"; // 이미지 저장 경로
 
     @Override
@@ -221,6 +224,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(Long productId) {
+        List<Wishlist> wishlists = wishlistRepository.findByProductId(productId);
+        wishlistRepository.deleteAll(wishlists);
+
         productRepository.deleteById(productId);
     }
 

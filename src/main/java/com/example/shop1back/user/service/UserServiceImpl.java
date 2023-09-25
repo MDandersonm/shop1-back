@@ -10,6 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -48,5 +50,15 @@ public class UserServiceImpl implements UserService {
 //        user.setNickName(userRegisterForm.getNickName());
 //        userRepository.save(user);
 //        return true;
+    }
+
+    @Override
+    public boolean isEmailDuplicated(String email) {
+        return userRepository.opFindByEmail(email).isPresent();
+    }
+
+    @Override
+    public boolean isUsernameDuplicated(String username) {
+        return userRepository.opFindByUsername(username).isPresent();
     }
 }

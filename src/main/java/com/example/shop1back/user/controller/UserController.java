@@ -6,10 +6,15 @@ import com.example.shop1back.user.entity.User;
 import com.example.shop1back.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.datasource.IsolationLevelDataSourceAdapter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -36,22 +41,40 @@ public class UserController {
         return principal.getUser();
     }
 
-    @GetMapping("/test/login")
-    public @ResponseBody String testLogin(Authentication authentication,
-                                          @AuthenticationPrincipal PrincipalDetails userDetails) {	//의존성주입
-        System.out.println("test/login===========");
-        PrincipalDetails principalDetails =(PrincipalDetails)authentication.getPrincipal();
-        ///다운케스팅을 거쳐서 user오브젝트를 찾는방법
-        System.out.println("principalDetails.getUser():"+ principalDetails.getUser());
-        System.out.println("authentication.getPrincipal():"+ authentication.getPrincipal());
+//    @GetMapping("/test/login")
+//    public @ResponseBody String testLogin(Authentication authentication,
+//                                          @AuthenticationPrincipal PrincipalDetails userDetails) {	//의존성주입
+//        System.out.println("test/login===========");
+//        PrincipalDetails principalDetails =(PrincipalDetails)authentication.getPrincipal();
+//        ///다운케스팅을 거쳐서 user오브젝트를 찾는방법
+//        System.out.println("principalDetails.getUser():"+ principalDetails.getUser());
+//        System.out.println("authentication.getPrincipal():"+ authentication.getPrincipal());
+//
+//        //@authentication어노테이션을 통해서 user오브젝트를 찾는 방법
+//        System.out.println("userDetails.getUsername():"+userDetails.getUsername());
+//        System.out.println("userDetails.getUser():"+userDetails.getUser());
+//
+//        //다운케스팅을 거쳐서 user오브젝트를 찾을수도있고
+//        //@authentication 어노테이션을통해서도 찾을수있다 두가지방법이있는거.
+//        return "세션 정보 확인하기";
+//    }
 
-        //@authentication어노테이션을 통해서 user오브젝트를 찾는 방법
-        System.out.println("userDetails.getUsername():"+userDetails.getUsername());
-        System.out.println("userDetails.getUser():"+userDetails.getUser());
-
-        //다운케스팅을 거쳐서 user오브젝트를 찾을수도있고
-        //@authentication 어노테이션을통해서도 찾을수있다 두가지방법이있는거.
-        return "세션 정보 확인하기";
+    @PostMapping("/check-email/{email}")
+    public ResponseEntity<Map<String, Boolean>> checkEmailDuplication(@PathVariable String email) {
+        log.info("check");
+        boolean isDuplicated = userService.isEmailDuplicated(email);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("duplicated", isDuplicated);
+        return ResponseEntity.ok(response);
+    }
+    @PostMapping("/check-username/{username}")
+    public ResponseEntity<Map<String, Boolean>> checkUsernameDuplication(@PathVariable String username) {
+        log.info("check");
+        System.out.println("username"+username);
+        boolean isDuplicated = userService.isUsernameDuplicated(username);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("duplicated", isDuplicated);
+        return ResponseEntity.ok(response);
     }
 
 

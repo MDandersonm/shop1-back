@@ -31,12 +31,12 @@ public class WishlistController {
             return new ResponseEntity<>(toggleWishlist, HttpStatus.CREATED);
         }
     }
-    @GetMapping(path = "/useronly/list/{userId}")
+    @GetMapping(path = "/onlyuser/list/{userId}")
     public List<ProductListResponse> wishList(@PathVariable Long userId) {
         log.info("wishlist list! ");
         return wishlistService.wishList(userId);
     }
-    @GetMapping("/useronly/check/{userId}/{productId}")
+    @GetMapping("/onlyuser/check/{userId}/{productId}")
     public ResponseEntity<Boolean> isWishList(@PathVariable Long userId, @PathVariable Long productId) {
         boolean isWishlist = wishlistService.isWishlist(userId, productId);
         return ResponseEntity.ok(isWishlist);

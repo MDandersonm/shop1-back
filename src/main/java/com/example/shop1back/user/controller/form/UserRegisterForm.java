@@ -11,5 +11,4 @@ public class UserRegisterForm {
     private String password;
     private String username;
 
-
 }
